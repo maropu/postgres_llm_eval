@@ -1,0 +1,555 @@
+[[questions]]
+question = """PostgreSQL16のpg_dumpの改善項目について、次の記述のうち正しいものはどれか？
+[1] pg_dumpでは子テーブルとパーティションのダンプを制御する機能は追加されていない
+[2] pg_dumpにはLZ4圧縮などの新しい圧縮手法は追加されていない
+[3] pg_dumpでは圧縮にlongモードを使用することはできない
+[4] pg_dumpでは、より一貫性のある圧縮構文を受け付けるように改良された"""
+answer = 4
+changelog = """pg_dumpで子テーブルとパーティションのダンプを制御できるようにしました。新しいオプションは--table-and-children、--exclude-table-and-children、--exclude-table-data-and-childrenです。
+pg_dumpにLZ4圧縮とZstandard圧縮を追加しました。
+pg_dumpとpg_basebackupで圧縮にlongモードを使用できるようにしました。
+pg_dumpを改良して、より一貫性のある圧縮構文を受け付けるようにしました。--compress=gzip:5のようなオプションです。"""
+
+[[questions]]
+question = """PostgreSQL16では、一部の関数がOIDの数値を入力として受け付けるようになりました。これに該当する関数のグループは次のうちどれか？
+[1] To_char*関数群
+[2] To_date*関数群
+[3] To_number*関数群
+[4] To_reg*関数群"""
+answer = 4
+changelog = """to_reg*関数群がOIDの数値を入力として受け付けるようにしました。"""
+
+[[questions]]
+question = """PostgresSQL16では、COPY FROMコマンドの変更がありました。これについて、次の説明のうち正しいものはどれですか？
+[1] COPY FROMコマンドは、列のDEFAULTに値をマップできない
+[2] COPY FROMコマンドは、パラメータ化された問い合わせの汎用プランを表示できる
+[3] COPY FROMコマンドで行を外部テーブルへのみバッチ追加できる
+[4] COPY FROMコマンドは、列のDEFAULTに値をマップできる"""
+answer = 4
+changelog = """COPY FROMで列のDEFAULTに値をマップできるようにしました。"""
+
+[[questions]]
+question = """pg_basebackupコマンドについての説明として、次のうち正しいものはどれですか？
+[1] PGDATAディレクトリに格納されたテーブル空間を処理することはできません
+[2] 数値の圧縮オプションを受け付けることはできません
+[3] --compress=server-5のようなオプションはサポートされていません
+[4] PGDATAディレクトリに格納されたテーブル空間を処理することが可能です"""
+answer = 4
+changelog = """pg_basebackupが数値の圧縮オプションを受け付けるように改善しました。--compress=server-5のようなオプションがサポートされるようになりました。pg_basebackupでPGDATAディレクトリに格納されたテーブル空間を処理できるように修正しました。"""
+
+[[questions]]
+question = """PostgreSQL16のPL/pgSQLでは、関数のOIDを取得するために使用するコマンドはどれか？
+[1] GET INFO
+[2] SET DIAGNOSTICS
+[3] GET DIAGNOSTICS
+[4] SET INFO"""
+answer = 3
+changelog = """PL/pgSQLで現在の関数のOIDを取得する機能を追加しました。これはGET DIAGNOSTICS variable = PG_ROUTINE_OIDで実現します。"""
+
+[[questions]]
+question = """PostgreSQL16において、pg_create_subscriptionロールは何をする権限を有していますか？
+[1] テーブルを作成する
+[2] サブスクリプションを削除する
+[3] サブスクリプションを作成する
+[4] DB全体のバックアップを取る"""
+answer = 3
+changelog = """サブスクリプション作成の権限を持つ定義済みロールpg_create_subscriptionを追加しました。"""
+
+[[questions]]
+question = """PostgreSQL16では、ロジカルデコーディングのパブリッシャーが情報の転送方法を制御するために追加されたサーバパラメータについて説明した次のうち、正しいものはどれですか？
+[1] debug_logical_replication_streamingというパラメータが追加された。
+[2] debug_logical_replication_streamingという機能が削除された。
+[3] debug_logical_replication_streamingというパラメータのデフォルト値は'false'である。
+[4] debug_logical_replication_streamingパラメータはスーパーユーザのみが変更できる。"""
+answer = 1
+changelog = """ロジカルデコーディングのパブリッシャーが変更を転送する方法と、サブスクライバーが変更を適用する方法を制御するためのサーバパラメータを追加しました。そのパラメータはdebug_logical_replication_streamingです。"""
+
+[[questions]]
+question = """PostgreSQL16のpsqlについて、次の記述のうち正しいものはどれか？
+[1] 新しいコマンド\\bindを使用して、psqlが拡張問い合わせプロトコルを使用して問い合わせを送信できない
+[2] \\watchコマンドにより実行回数を制限できない
+[3] psqlスクリプトでは、シェルコマンドや問い合わせの終了ステータスを取得できない
+[4] psqlの\\watchで無効な値を検出し、遅延なしを指定できるよう0を許可している"""
+answer = 4
+changelog = """psqlが拡張問い合わせプロトコルを使用して問い合わせを送信できるようにしました。このような問い合わせへの引数の渡しは、新しいpsqlの\\bindコマンドを使って行います。
+psqlの\\watchを実行回数を制限できるようにしました。\\watchオプションは、指定されたときに名前を付けることができるようになりました。
+psqlスクリプトでシェルコマンドや問い合わせの終了ステータスを取得できるようにしました。新しいpsql制御変数は、SHELL_ERRORとSHELL_EXIT_CODEです。
+psqlの\\watchで無効な値を検出し、遅延なしを指定できるよう0を許可しました。"""
+
+[[questions]]
+question = """PostgreSQL 16に追加された新規ビュー「pg_stat_io」の主な機能は何ですか？
+[1] データベースのI/O統計情報の監視
+[2] データベースのセッション情報の監視
+[3] データベースのプロセス情報の監視
+[4] データベースのパーティショニング情報の監視"""
+answer = 1
+changelog = """新しいpg_stat_ioビューを使用したI/O統計情報の監視ができるようになりました。"""
+
+[[questions]]
+question = """PostgreSQL 16の設定ファイルで新たに正規表現マッチングがサポートされるようになったのはどの設定ファイルですか？
+[1] postgresql.conf
+[2] pg_hba.confとpg_ident.conf
+[3] recovery.conf
+[4] pg_service.conf"""
+answer = 2
+changelog = """pg_hba.confのユーザ名とデータベース名、およびpg_ident.confのユーザ名の正規表現マッチングがサポートされました。"""
+
+[[questions]]
+question = """PostgreSQL16の新たな機能に関する記述として正しいものは次のうちどれか？
+[1] 文字列型の配列をJSON形式に変換する関数が追加された
+[2] すべてのSQL文の実行時の統計情報を記録するためのモジュールが廃止された
+[3] マルチバイト文字系のカタログ情報に対するクエリの実行速度が大幅に低下した
+[4] レプリケーションスロットの作成を禁止する設定が削除された"""
+answer = 1
+changelog = """文字列型の配列をJSON形式に変換する関数を追加しました"""
+
+[[questions]]
+question = """PostgreSQL16のpsqlの改善について、次の記述のうち誤っているものはどれか？
+[1] タブ補完機能が改善された
+[2] 展開された形式でのヘッダ行の最大幅を制御することができるようになった
+[3] \\drgコマンドが追加され、ロールメンバシップの詳細を表示できるようになった
+[4] \\dpSと\\zSコマンドにより、ユーザオブジェクトのアクセス権限を表示できるようになった"""
+answer = 4
+changelog = """様々なpsqlのタブ補完機能を改善しました。
+psqlで展開された形式でのヘッダ行の最大幅を制御できるようにしました。これはxheader_widthで制御します。
+psqlにロールメンバシップの詳細を表示する\\drgコマンドを追加しました。
+psqlのアクセス権限コマンドでシステムオブジェクトを表示できるようにしました。オプションは\\dpSと\\zSです。"""
+
+[[questions]]
+question = """PostgreSQL16のpg_buffercacheに追加された関数について、正しい説明はどれでしょうか？
+[1] バッファの使用率を報告するpg_buffercache_usage_ratio関数が追加されました。
+[2] バッファの概要を報告するpg_buffercache_summary関数が追加されました。
+[3] バッファの詳細情報を報告するpg_buffercache_detail関数が追加されました。
+[4] バッファのタイプ別統計を報告するpg_buffercache_type_stats関数が追加されました。"""
+answer = 2
+changelog = """pg_buffercacheにバッファの概要を報告するpg_buffercache_summary関数を追加しました。"""
+
+[[questions]]
+question = """PostgreSQL16の新機能について、次のうちどの統計情報が新しく追加されましたか？
+[1] 新しいページへの移動が発生した更新された行
+[2] 新しいページへの移動が発生しなかった更新された行
+[3] 更新されていない行
+[4] 移動が発生しなかった新しいページ"""
+answer = 1
+changelog = """新しいページへの移動が発生した更新された行の統計情報を記録するようにしました。"""
+
+[[questions]]
+question = """PostgreSQL 16では、論理レプリケーションのどの要素で大規模なトランザクションを並列に適用できるようになりましたか？
+[1] パブリッシャー
+[2] サブスクライバー
+[3] プロバイダー
+[4] レプリカ"""
+answer = 2
+changelog = """論理レプリケーションのサブスクライバーで大規模なトランザクションを並列に適用できるようになりました。"""
+
+[[questions]]
+question = """新たに追加されたlibpqオプションのload_balance_hosts=randomについて、次のうち正しいものどれですか？
+[1] ホスト間での負荷分散に使用できるオプションで、複数のホストを平等に使用する
+[2] 複数のホストからランダムに選択するオプションで、負荷分散に使用できる
+[3] ホスト間での負荷分散を行うオプションだが、複数のホストからのランダム選択はできない
+[4] 複数のホストから優先度順に選択するオプションで、負荷分散に使用できる"""
+answer = 2
+changelog = """libpqで指定した複数のホストからランダムに選択できるようにしました。これはload_balance_hosts=randomで有効になり、ロードバランシングに使用できます。"""
+
+[[questions]]
+question = """PostgresSQL16では、REINDEXコマンドの仕様に変更がありました。以下のうち正しい説明はどれですか？
+[1] REINDEX DATABASEとREINDEX SYSTEMでは、引数が不要になった
+[2] REINDEX DATABASEとREINDEX SYSTEMでは、以前と同様にデータベース名を指定する必要がある
+[3] REINDEX DATABASEとREINDEX SYSTEMでは、以前と同様にデータベース名を指定する必要がない
+[4] REINDEX DATABASEとREINDEX SYSTEMでは、引数が必要になった"""
+answer = 1
+changelog = """REINDEX DATABASEとREINDEX SYSTEMで引数が不要になりました。以前は、データベース名を指定する必要がありました。"""
+
+[[questions]]
+question = """PostgreSQL16のバージョンで、スタンバイからプライマリへの昇格を実行するために使用する関数はどれですか？
+[1] pg_ctl promote
+[2] pg_promote
+[3] promote_trigger_file
+[4] pg_standby"""
+answer = 1
+changelog = """サーバパラメータpromote_trigger_fileを削除しました。これはスタンバイからプライマリへの昇格に使用されていましたが、現在はpg_ctl promoteまたはpg_promote関数で容易に実行できます。"""
+
+[[questions]]
+question = """PostgreSQL16では、論理レプリケーションの選択とDMLアクションの実行について説明した次のうち、正しいものはどれですか？
+[1] 全ての操作はサブスクリプションの所有者として実行され、セキュリティが向上した。
+[2] 全ての操作はサブスクリプションの所有者として実行され、セキュリティが緩和された。
+[3] 全ての操作はテーブルの所有者として実行され、セキュリティが向上した。
+[4] 全ての操作はテーブルの所有者として実行され、セキュリティが緩和された。"""
+answer = 3
+changelog = """論理レプリケーションのSELECTとDMLアクションをテーブルの所有者として実行するようにしました。これによりセキュリティが向上し、サブスクリプションの所有者はスーパーユーザであるか、またはレプリケーションセット内のテーブルを所有するすべてのロールに対するSET ROLE権限を持っている必要があります。以前の動作である、すべての操作をサブスクリプション所有者として実行するには、サブスクリプションのrun_as_ownerオプションを使用することで可能です。"""
+
+[[questions]]
+question = """PostgreSQL16において、日時の入力に関して新たに変更された特性として正しくないものは次のうちどれか？
+[1] 日時入力で'infinity'の表現を受け付けるようになった
+[2] 'epoch'と'infinity'は、日時文字列で他のフィールドと一緒に指定できるようになった
+[3] 'epoch'と'infinity'は、日時文字列で他のフィールドと一緒に指定することは禁止された
+[4] 文書化されていないYyearMmonthDday形式の日付入力サポートは削除された"""
+answer = 2
+changelog = """日時入力で+infinityの表現を受け付けるようにしました。
+日時文字列で他のフィールドと一緒にepochとinfinityを指定することを禁止しました。"""
+
+[[questions]]
+question = """PostgreSQL16での拡張ライブラリのシンボルエクスポートについて、正しいものは次のうちどれか？
+[1] 拡張ライブラリのシンボルはデフォルトでエクスポートされる
+[2] コアバックエンドや他の拡張機能から呼び出す必要のある関数は、明示的にPGDLLEXPORTとマークする必要はない
+[3] 拡張ライブラリのシンボルはデフォルトでエクスポートされない
+[4] PGDLLEXPORTマークは不要である"""
+answer = 3
+changelog = """拡張ライブラリのシンボルがデフォルトでエクスポートしないようにしました。コアバックエンドや他の拡張機能から呼び出す必要のある関数は、明示的にPGDLLEXPORTとマークする必要があります。"""
+
+[[questions]]
+question = """PostgreSQL16で削除された、pg_dumpのオプションはどれですか？
+[1] pg_get_wal_records_info_till_end_of_wal
+[2] pg_get_wal_stats_till_end_of_wal
+[3] pg_walinspect
+[4] pg_replslot"""
+answer = 3
+changelog = """pg_walinspect関数pg_get_wal_records_info_till_end_of_walとpg_get_wal_stats_till_end_of_walを削除しました。"""
+
+[[questions]]
+question = """PostgreSQL16において、整数と数値の定数で使用できるようになった記号は次のうちどれか？
+[1] ハイフン
+[2] プラス
+[3] アンダースコア
+[4] アスタリスク"""
+answer = 3
+changelog = """整数と数値の定数でアンダースコアを使用できるようにしました。これにより、長い数字列の読みやすさが向上します。"""
+
+[[questions]]
+question = """PostgreSQL16の新機能である論理レプリケーションの初期テーブル同期については、行をバイナリ形式でコピーできるとされていますがこれについて正しいのは次のうちどれか？
+[1] バイナリ形式での行コピーは全てのテーブルに対して可能である。
+[2] バイナリ形式での行コピーはバイナリとしてマークされたサブスクリプションに対してのみ可能である。
+[3] バイナリ形式での行コピーはバージョン16.1から利用可能である。
+[4] バイナリ形式での行コピーは行の挿入時にしか使用できない。"""
+answer = 2
+changelog = """論理レプリケーションの初期テーブル同期で行をバイナリ形式でコピーできるようにしました。これは、バイナリとしてマークされたサブスクリプションに対してのみ可能です。"""
+
+[[questions]]
+question = """PostgreSQL16のビルドシステムについての記述として正しいものは次のうちどれか？
+[1] Visual Studio 2013はサポートされている
+[2] メゾンビルドシステムは追加されていない
+[3] 新たにBisonバージョン2.3が必要とされている
+[4] OpenSSLバイナリの場所はビルドシステムが制御できない"""
+answer = 3
+changelog = """Bisonバージョン2.3以降が必要になりました。、Flexバージョン2.5.35以降が必要になりました。、GSSAPIサポートのためにMITKerberosを必要になりました。、Visual Studio 2013のサポートを削除しました。、mesonビルドシステムを追加しました。これは最終的に、AutoconfとWindowsベースのMSVCビルドシステムを置き換えることになります。、ビルドシステムが使用するopensslバイナリの場所を制御できるようにしました。configureまたはmesonオプションでopensslプログラムの検索をできるようにしました。"""
+
+[[questions]]
+question = """PostgreSQL16のpsqlの新しいコマンドについて、次の記述のうち誤っているものはどれか？
+[1] \\d+コマンドは、外部テーブルの子テーブルとパーティションのFOREIGN表示を追加した
+[2] \\sfコマンドは、関数のソースコードを表示するようになった
+[3] \\bindコマンドは、拡張問い合わせプロトコルを使用して問い合わせへの引数を渡すために新しく加えられた
+[4] \\watchコマンドは、実行回数を制限できるようになり、さらに指定されたときに名前を付けることができるようになった"""
+answer = 2
+changelog = """psqlの\\d+に外部テーブルの子テーブルとパーティションのFOREIGN表示を追加しました。
+\\df+で関数のソースコードを表示しないようにしました。関数本体は\\sfで見やすくなりました。
+psqlが拡張問い合わせプロトコルを使用して問い合わせを送信できるようにしました。このような問い合わせへの引数の渡しは、新しいpsqlの\\bindコマンドを使って行います。
+psqlの\\watchを実行回数を制限できるようにしました。\\watchオプションは、指定されたときに名前を付けることができるようになりました。"""
+
+[[questions]]
+question = """PostgreSQL16では、次の中でどのサーバパラメータが削除されていますか？
+[1] debug_parallel_query
+[2] lc_collateとlc_ctype
+[3] vacuum_defer_cleanup_age
+[4] promote_trigger_file"""
+answer = 2
+changelog = """読み取り専用サーバパラメータlc_collateとlc_ctypeを削除しました。照合順序とロケールはデータベースによって異なる可能性があるため、読み取り専用のサーバパラメータは役に立っていませんでした。"""
+
+[[questions]]
+question = """PostgreSQL16のPL/pgSQLでは、次のうち関数のOIDを取得するための正しい文法はどれか？
+[1] GET DIAGNOSTICS PG_ROUTINE_OID = variable
+[2] GET DIAGNOSTICS variable = PG_ROUTINE_OID
+[3] SET DIAGNOSTICS PG_ROUTINE_OID = variable
+[4] SET DIAGNOSTICS variable = PG_ROUTINE_OID"""
+answer = 2
+changelog = """PL/pgSQLで現在の関数のOIDを取得する機能を追加しました。これはGET DIAGNOSTICS variable = PG_ROUTINE_OIDで実現します。"""
+
+[[questions]]
+question = """新機能のlibpqが証明書の検証にシステム証明書プールを使用できるようになったのはどのような条件下でしょうか？
+[1] ホスト名確認が不要である条件下
+[2] sslmode=verify-caの設定下
+[3] sslrootcert=systemで有効にし、sslmode=verify-fullも有効にする
+[4] sslcertmode=allowの設定下"""
+answer = 3
+changelog = """libpqが証明書の検証にシステム証明書プールを使用できるようにしました。これはsslrootcert=systemで有効になります。これによりsslmode=verify-fullも有効にします。"""
+
+[[questions]]
+question = """PostgreSQL16ではpg_stat_statementsの変更が行われました。その内容として正しいものはどれでしょうか？
+[1] ユーティリティコマンドで使用される定数をプレースホルダー、例えば$1で表示するように変更されました。
+[2] ユーティリティコマンドで使用される定数を正規化するように変更されました。
+[3] ユーティリティコマンドで使用される定数を削除するように変更されました。
+[4] ユーティリティコマンドで使用される定数がそのまま表示されるように変更されました。"""
+answer = 2
+changelog = """pg_stat_statementsでユーティリティコマンドで使用される定数を正規化します。以前は、プレースホルダの代わりに定数、例えば$1が表示されていました。"""
+
+[[questions]]
+question = """PostgreSQL16のpageinspectモジュールに追加された機能として正しいのはどれでしょうか？
+[1] 複数ページの統計を報告するbt_multi_page_stats関数が追加されました。
+[2] 複数テーブルの統計を報告するbt_multi_table_stats関数が追加されました。
+[3] 複数データベースの統計を報告するbt_multi_database_stats関数が追加されました。
+[4] 複数ユーザの統計を報告するbt_multi_user_stats関数が追加されました。"""
+answer = 1
+changelog = """pageinspectで複数ページの統計を報告するbt_multi_page_stats関数を追加しました。これはbt_page_statsと似ていますが、ページの範囲を指定してレポートできる点が異なります。"""
+
+[[questions]]
+question = """PostgreSQL16では、新たに追加されたrandom_normal関数について説明しています。この関数が提供するものは何ですか？
+[1] 一様分布の乱数
+[2] 正規分布の乱数
+[3] 二項分布の乱数
+[4] ガンマ分布の乱数"""
+answer = 2
+changelog = """正規分布の乱数を提供するrandom_normal関数を追加しました。"""
+
+[[questions]]
+question = """PostgresSQL16では、VACUUMコマンドの仕様に変更がありました。以下のうち正しい説明はどれですか？
+[1] VACUUMコマンドは、以前と同様に全てのテーブルを処理する
+[2] VACUUMコマンドは、PROCESS_MAINをオンにすることでTOASTテーブルのみを処理することができる
+[3] VACUUMコマンドは、凍結された統計情報をスキップまたはすべて更新することができる
+[4] VACUUMコマンドは、以前と同様に全ての統計情報を処理しきれないため、一部をスキップする必要がある"""
+answer = 3
+changelog = """VACUUMとvacuumdbがTOASTテーブルのみを処理できるようにしました。これは、VACUUMでPROCESS_MAINをオフにするか、vacuumdbで--no-process-mainオプションを使用して実現できます。そして、VACUUMに凍結された統計情報をスキップまたはすべて更新するオプションを追加しました。そのオプションはSKIP_DATABASE_STATSとONLY_DATABASE_STATSです。"""
+
+[[questions]]
+question = """PostgreSQL16の変更により、どのビューに投機的ロックの情報が追加されましたか？
+[1] pg_locks
+[2] pg_stats
+[3] pg_tables
+[4] pg_views"""
+answer = 1
+changelog = """投機的ロックの情報をpg_locksシステムビューに追加しました。"""
+
+[[questions]]
+question = """PostgreSQL16の以下の新たな変更について、誤っているものはどれですか？
+[1] カスタム形式のバックアップを出力できるオプションが追加された
+[2] 実行されたすべてのSQL文の統計情報を記録するためのモジュールが追加された
+[3] レプリケーションスロットの作成を禁止する設定が削除された
+[4] マルチバイト文字系のカタログ情報に対するクエリの実行速度が向上した"""
+answer = 3
+changelog = """レプリケーションスロットの作成を禁止する設定は存在しません"""
+
+[[questions]]
+question = """PostgreSQL16に追加されたデバッグモジュール「pg_walinspect」について、正しい説明はどれでしょうか？
+[1] WALブロック情報を報告するpg_get_wal_block_info関数が追加されました。
+[2] バッファ情報を報告するpg_get_buffer_info関数が追加されました。
+[3] テーブルスペース情報を報告するpg_get_tablespace_info関数が追加されました。
+[4] データベース情報を報告するpg_get_database_info関数が追加されました。"""
+answer = 1
+changelog = """WALブロック情報を報告するpg_walinspectのpg_get_wal_block_info関数を追加しました。"""
+
+[[questions]]
+question = """pg_waldumpコマンドについての説明として、次のうち正しいものはどれですか？
+[1] pg_waldumpはタイムラインの変更を追跡できません
+[2] ページ全体のイメージをダンプするためのオプションは追加されていません
+[3] ページ全体のイメージをダンプするための--save-fullpageオプションが追加されました
+[4] -t/--timelineオプションでは、16進数値を受け付けることはできません"""
+answer = 3
+changelog = """pg_waldumpにページ全体のイメージをダンプするための--save-fullpageオプションを追加しました。pg_waldumpの-t/--timelineオプションで16進数値を受け付けるようにしました。"""
+
+[[questions]]
+question = """PostgreSQL16でのビルドシステムのオプションについて、正しいものは次のうちどれか？
+[1] 小さなテーブルセグメントサイズのテストは可能ではない
+[2] pg_indentオプションは削除された
+[3] --code-baseと--buildオプションは削除された
+[4] pg_bsd_indentソースコードはメインツリーから削除された"""
+answer = 3
+changelog = """小さなテーブルセグメントサイズのテストを可能にするビルドオプションを追加しました。ビルドオプションは--with-segsize-blocksと-Dsegsize_blocksです。pgindentオプションを追加しました。新しいオプションは--show-diff、--silent-diff、--commit、--helpで、複数の--excludeオプションが可能です。また、typedefファイルを明示的に指定する必要があります。オプション--code-baseと--buildは削除されました。pg_bsd_indentソースコードをメインツリーに追加しました。make_ctagsとmake_etagsを改善しました。"""
+
+[[questions]]
+question = """新機能のsslcertmodeオプションについて、次のうち正しいのはどれですか？
+[1] クライアント証明書の送信を制御するオプションで、オプションの値は手動、許可、要求、自動の4つです
+[2] クライアント証明書の送信を制御するオプションで、オプションの値は無効、残留、修正、有効の4つです
+[3] ブートストラップサーバーのリストを指定し、それらからランダムに選択することが可能なオプションです
+[4] クライアント証明書の送信を制御するオプションで、オプションの値は無効、許可、要求の3つです"""
+answer = 4
+changelog = """クライアント証明書の送信を制御するlibpqのsslcertmodeオプションを追加しました。オプションの値は、disable、allow、requireです。"""
+
+[[questions]]
+question = """PostgreSQL16では次の中でどの動作が変更されましたか？
+[1] ON SELECTルールを使用したcreate viewsは許可されています
+[2] サーバパラメータforce_parallel_modeがdebug_parallel_queryに変更されました
+[3] vacuum_defer_cleanup_ageパラメータが追加されました
+[4] lead_standby_feedbackとレプリケーションスロットが削除されました"""
+answer = 2
+changelog = """サーバパラメータforce_parallel_modeをdebug_parallel_queryに変更しました。"""
+
+[[questions]]
+question = """createuserコマンドのユーザーオプションについての変更として、次のうち正しいものはどれですか？
+[1] --roleオプションが廃止され、使用できなくなった
+[2] --roleオプションは非推奨となり、代わりに--member-ofオプションが追加された
+[3] ユーザーオプションの制御は可能にならなかった
+[4] --roleオプションは引き続き使用可能だが、新しいオプションは追加されなかった"""
+answer = 2
+changelog = """createuserに、より多くのユーザオプションを制御するオプションを追加しました。具体的には、新しいオプションは、有効期限、行レベルのセキュリティのバイパス、およびロールメンバシップを制御します。createuserの--roleオプションを非推奨としました。このオプションは、新しいcreateuserロールのメンバシップオプションと混同されやすいため、同じ機能を持つ--member-ofオプションが追加されました。--roleオプションは引き続き使用できます。"""
+
+[[questions]]
+question = """PostgreSQL16で追加されたDSMAllocate待機イベントは何を示しますか？
+[1] スピンロック遅延時間
+[2] 動的共有メモリ割り当て待機
+[3] 最近のバックアップ時間
+[4] データベースの実行時間"""
+answer = 2
+changelog = """動的共有メモリ割り当て待機を示す新しい待機イベントDSMAllocateを作成しました。"""
+
+[[questions]]
+question = """PostgresSQL16では、CREATE TABLEコマンドの変更がありました。以下のうち正しい説明はどれですか？
+[1] CREATE TABLEコマンドでSTORAGEタイプを指定できない
+[2] CREATE TABLEコマンドで、外部テーブルでのTRUNCATEトリガが可能となった
+[3] CREATE TABLEコマンドで、何も指定されていない場合、統計名を生成できるようになった
+[4] CREATE TABLEコマンドでは、以前は、ALTER TABLEのみがSTORAGEタイプを制御でき、現在でもその制限は変わらない"""
+answer = 1
+changelog = """CREATE TABLEでSTORAGEタイプを指定できるようにしました。"""
+
+[[questions]]
+question = """PostgreSQL 16の新機能として、FROM句の副問い合わせについての変更がありました。その内容として正しいものはどれでしょうか？
+[1] FROM句の副問い合わせでは別名が必須となった
+[2] FROM句の副問い合わせで別名を省略できるようになった
+[3] FROM句の副問い合わせではより多くのクエリ型が許容されるようになった
+[4] FROM句の副問い合わせは廃止された"""
+answer = 2
+changelog = """FROM句の副問い合わせで別名を省略できるようにしました。"""
+
+[[questions]]
+question = """SQL/JSONパスでの数値リテラルについて、PostgreSQL 16では何が可能になったと言えますか？
+[1] 2進数のみ桁間のアンダースコアが利用可能になった
+[2] 桁間のアンダースコアは16進数の整数にのみ利用可能になった
+[3] 16進数、8進数、および2進数の整数で、桁間のアンダースコアの利用が可能になった
+[4] 桁間のアンダースコアは利用不可能となった"""
+answer = 3
+changelog = """SQL/JSONパスで拡張された数値リテラルに対応しました。たとえば、16進数、8進数、および2進数の整数で、桁間のアンダースコアが利用可能になりました。"""
+
+[[questions]]
+question = """PostgreSQL16のPL/pgSQLでは、特定の関数で使用される特殊変数として正しいものは次のうちどれか？
+[1] PG_ROUTINE_OID
+[2] PG_FUNCTION_ID
+[3] PL_ROUTINE_OID
+[4] PL_FUNCTION_ID"""
+answer = 1
+changelog = """PL/pgSQLで現在の関数のOIDを取得する機能を追加しました。これはGET DIAGNOSTICS variable = PG_ROUTINE_OIDで実現します。"""
+
+[[questions]]
+question = """pg_upgradeコマンドの新機能について次のうち正しいものはどれですか？
+[1] デフォルトの転送モードを指定するオプションが削除されました
+[2] 新しいクラスタのロケールとエンコーディングを設定できなくなりました
+[3] 新しいクラスタのロケールとエンコーディング設定をする必要があります
+[4] デフォルトの転送モードを指定するための--copyオプションが追加されました"""
+answer = 4
+changelog = """pg_upgradeで新しいクラスタのロケールとエンコーディングを設定しました。これにより、新しいクラスタを同じロケールとエンコーディング設定で作成する必要がなくなりました。pg_upgradeにデフォルトの転送モードを指定するためのオプションを追加しました。そのオプションは--copyです。"""
+
+[[questions]]
+question = """PostgreSQL16では、pg_collation_actual_version関数がデフォルトの照合順序に対して妥当な値を返すように変更されました。以前この関数が返していた値は何ですか？
+[1] 照合のバージョン
+[2] デフォルトの照合順序
+[3] 正しい照合順序
+[4] NULL"""
+answer = 4
+changelog = """デフォルトの照合順序に対して妥当な値を返すようにpg_collation_actual_version関数を変更しました。以前はNULLを返していました。"""
+
+[[questions]]
+question = """新機能のlibpq接続オプションrequire_authについて、次のうち正しいものはどれですか？
+[1] 複数の認証方式からランダムに選択することが可能になりました
+[2] リストア操作の際に必要な認証方式を指定することが可能になりました
+[3] 認証方式のリストを指定するけれども、特定の認証方式を禁止することはできません
+[4] 受け入れ可能な認証方式のリストを指定する、または特定の認証方式を禁止することが可能になりました"""
+answer = 4
+changelog = """受け入れ可能な認証方式のリストを指定するためのlibpq接続オプションrequire_authを追加しました。これは、特定の認証方式を禁止するためにも使用できます。"""
+
+[[questions]]
+question = """PostgreSQL16で追加され、データ型に関するエラーをチェックする機能として正しいものは次のうちどれか？
+[1] pg_input_is_valid
+[2] pg_input_check
+[3] pg_error_info
+[4] pg_error_check"""
+answer = 1
+changelog = """型変換エラーをチェックする関数pg_input_is_validとpg_input_error_infoを追加しました。"""
+
+[[questions]]
+question = """PostgreSQL16のアーキテクチャに関するサポートの変更点について、正しいものは次のうちどれか？
+[1] HP-UXのサポートが続けられている
+[2] ARMアーキテクチャでの高度なSIMD命令のサポートが追加された
+[3] M68Kアーキテクチャのサポートが加えられた
+[4] x86-64アーキテクチャでのSSE2ベクトル演算のサポートが削除された"""
+answer = 2
+changelog = """HP-UXのサポートを削除しました。、HP/Intel Itaniumのサポートを削除しました。、M68K、M88K、M32R、SuperH CPUアーキテクチャのサポートを削除しました。、x86-64アーキテクチャでのSSE2ベクトル演算のサポートを追加しました。、ARMアーキテクチャで高度なSIMD命令のサポートを追加しました。"""
+
+[[questions]]
+question = """以下の文章の中で、PostgreSQL 16におけるFROM句の副問い合わせについて正確に説明しているものはどれですか？
+[1] FROM句の副問い合わせで別名を必ず指定する必要がある
+[2] FROM句の副問い合わせで別名を省略することは認められていない
+[3] FROM句の副問い合わせで別名を指定する必要はなくなった
+[4] FROM句の副問い合わせでは別名を指定することが推奨されている"""
+answer = 3
+changelog = """FROM句の副問い合わせで別名を省略できるようにしました。"""
+
+[[questions]]
+question = """PostgreSQL16で主キーを使用しない論理レプリケーション適用のパフォーマンスが改善されました。具体的にどのような変更が行われたか、次の選択肢の中から正しいものを選んでください。
+[1] テーブルをシーケンシャルスキャンするのではなく、主キーインデックスを使用するようになりました。
+[2] テーブルをシーケンシャルスキャンするのではなく、Btreeインデックスを使用するようになりました。
+[3] テーブルをシーケンシャルスキャンするのではなく、GISTインデックスを使用するようになりました。
+[4] テーブルをシーケンシャルスキャンするのではなく、ハッシュインデックスを使用するようになりました。"""
+answer = 2
+changelog = """主キーを使用しない論理レプリケーション適用のパフォーマンスを改善しました。具体的には、REPLICA IDENTITY FULLは一致を見つけるためにテーブルをシーケンシャルスキャンするのではなく、Btreeインデックスを使用できるようになりました。"""
+
+[[questions]]
+question = """PostgreSQL16では、ANY_VALUEという集約関数が新たに追加されました。この関数についての説明として正しいものは次のうちどれか？
+[1] すべての値を返す集約関数である
+[2] 集合から最小の値を返す集約関数である
+[3] 集合から最大の値を追加する集約関数である
+[4] 集合から任意の値を返す集約関数である"""
+answer = 4
+changelog = """集合から任意の値を返す集約関数ANY_VALUEを追加しました。"""
+
+[[questions]]
+question = """PostgreSQL 16の新機能として、SQL/JSONパスでの数値リテラルに改良が加えられました。これについて正しい記述は次のうちどれですか？
+[1] SQL/JSONパスで拡張された数値リテラルには対応していない
+[2] SQL/JSONパスでの数値リテラルは整数のみ対応している
+[3] SQL/JSONパスで拡張された数値リテラルに対応し、16進数、8進数、および2進数の整数で、桁間のアンダースコアが利用可能になった
+[4] SQL/JSONパスにおける数値リテラルの対応は既に実装されていた"""
+answer = 3
+changelog = """SQL/JSONパスで拡張された数値リテラルに対応しました。たとえば、16進数、8進数、および2進数の整数で、桁間のアンダースコアが利用可能になりました。"""
+
+[[questions]]
+question = """次のうち、PostgreSQL16に新たに追加された変更点はどれですか？
+[1] UTF-8エンコーディングのデータへのクエリ実行速度が向上した
+[2] レプリケーションスロットの作成を禁止する設定が削除された
+[3] すべてのSQL文の実行時の統計情報を記録するためのモジュールが廃止された
+[4] 配列型のカラムを保持するテーブルに対するクエリの実行速度が大幅に低下した"""
+answer = 1
+changelog = """UTF-8エンコーディングのデータに対するクエリの性能が改善されました"""
+
+[[questions]]
+question = """次のうち、PostgreSQL16で実装されていない機能はどれですか？
+[1] 文字列型の配列をJSON形式に変換する関数が追加された
+[2] データベースの特定のカタログ情報に対するクエリの実行速度が改善された
+[3] レプリケーションスロットの作成を制限する設定が追加された
+[4] PostgreSQLが対応しているすべての文字セットのデータに対するクエリの実行速度が向上した"""
+answer = 3
+changelog = """レプリケーションスロットの作成を制限する設定は実装されていません"""
+
+[[questions]]
+question = """PostgreSQL16のPL/pgSQLでは、以下の命令のうち関数のOIDを取得するものはどれか？
+[1] GET DIAGNOSTICS variable = PG_ROUTINE_OID
+[2] SET DIAGNOSTICS variable = PG_ROUTINE_OID
+[3] GET INFORMATION variable = PG_ROUTINE_OID
+[4] SET INFORMATION variable = PG_ROUTINE_OID"""
+answer = 1
+changelog = """PL/pgSQLで現在の関数のOIDを取得する機能を追加しました。これはGET DIAGNOSTICS variable = PG_ROUTINE_OIDで実現します。"""
+
+[[questions]]
+question = """PostgreSQL 16では、下記のうちどの種類のハッシュ結合に対して並列処理が可能となりましたか？
+[1] FULLハッシュ結合と内部左OUTERハッシュ結合
+[2] FULLハッシュ結合と内部右OUTERハッシュ結合
+[3] LEFTハッシュ結合と内部右OUTERハッシュ結合
+[4] FULLハッシュ結合と外部左OUTERハッシュ結合"""
+answer = 2
+changelog = """FULLハッシュ結合および内部右OUTERハッシュ結合で並列処理ができるようになりました。"""
+
+[[questions]]
+question = """PostgreSQL16において、データ型に関する新たな特性として正しくないものは次のうちどれか？
+[1] 任意のサイズの16進数、8進数、2進数の整数をNUMERICが処理できるようになった
+[2] 整数と数値の定数にアンダースコアを使用できるようになった
+[3] 16進数、8進数、2進数の整数リテラルはすべて引用符で囲まれている
+[4] 文書化されていないYyearMmonthDday形式の日付入力サポートは削除された"""
+answer = 3
+changelog = """10進数以外の整数リテラルが利用可能になった。
+ NUMERICが任意のサイズの16進数、8進数、2進数の整数を処理できるようになった。
+ 以前は、これらの非10進数では、引用符で囲まれていない8バイトの整数のみがサポートされていた。"""
+

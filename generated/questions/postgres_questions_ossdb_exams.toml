@@ -1,0 +1,339 @@
+[[questions]]
+question = """PostgreSQL開発コミュニティについて、正しいものは次のうちどれか？
+[1] コミュニティは招待制度となっており、既に参画しているメンバーから招待を受ける必要がある
+[2] コミュニティの議論はメーリングリストを中心に行われている
+[3] コミュニティではバイナリを配布しており、ソースコードはダウンロードできない
+[4] コミュニティの運営主体は「日本PostgreSQLユーザ会」である"""
+answer = 2
+
+[[questions]]
+question = """
+テーブル t_user から複数行を選択する 正しいSQL は次のうちどれか？
+postgres=# select * from t_user ;
+ id |      name      | age | department
+----+----------------+-----+-------------
+  1 | Taro Yamada    |  30 | Engineering
+  2 | Hanako Suzuki  |  25 | Marketing
+  3 | Kenta Sato     |  28 | Sales
+  4 | Yuki Tanaka    |  35 | HR
+  5 | Rina Kobayashi |  22 | Finance
+  6 | Shota Watanabe |  29 | Engineering
+  7 | Mai Ito        |  31 | Marketing
+  8 | Koji Nakamura  |  26 | Sales
+(8 rows)
+
+[1] SELECT * FROM t_user WHERE name ~ 'a';
+[1] SELECT * FROM t_user WHERE name ~ 'e$';
+[1] SELECT * FROM t_user WHERE department ~ '^HR$';
+[1] SELECT * FROM t_user WHERE name ~ '^M';
+[1] SELECT * FROM t_user WHERE id::text ~ '^9$';"""
+answer = 1
+
+[[questions]]
+question = """ロジカルレプリケーションの説明として、正しいものは次のうちどれか？
+[1] Windows と Linux の PostgreSQL 間でのレプリケーションは不可能である
+[2] 異なるメジャーバージョン間のレプリケーションが可能である
+[3] サブスクライバー側のDBサーバは参照のみ可能であり、更新はできない
+[4] 既にストリーミングレプリケーションを実行しているプライマリに対して、パブリッシャーは設定できない"""
+answer = 2
+
+[[questions]]
+question = """インデックスの説明として、正しいものは次のうちどれか？
+[1] インデックスを使ったテーブルへのアクセスはシーケンシャルアクセスとなる
+[2] PostgreSQLで使用できるインデックスの種類は B-Tree インデックスのみである
+[3] 複数列を対象にしたインデックスを作成することができる
+[4] テーブルを削除する際は削除するテーブルを対象にしたインデックスを削除しておく必要がある"""
+answer = 3
+
+[[questions]]
+question = """「CREATE TABLE tbl (id integer, age integer, name text)」を実行しテーブルを作成した数件のデータを挿入した後、下記のSQLを実行した際にエラーが出力された
+postgres=# SELECT * FROM tbl GROUP BY id;
+ERROR:  column "tbl.age" must appear in the GROUP BY clause or be used in an aggregate function
+
+エラーが解消されるように修正された SQL は次のうちどれか？
+[1] SELECT id FROM tbl GROUP BY name;
+[2] SELECT age FROM tbl GROUP BY id;
+[3] SELECT id, age FROM tbl GROUP BY id;
+[4] SELECT max(id) FROM tbl GROUP BY id;"""
+answer = 4
+
+[[questions]]
+question = """crypt関数の意味として、正しいものは次のうちどれか？
+[1] 対称鍵を指定して、データを暗号化する
+[2] データのバイナリハッシュを計算する
+[3] パスワードのハッシュ処理を行う
+[4] データのハッシュ化MACを計算する"""
+answer = 3
+
+[[questions]]
+question = """「mydb」テーブルのみに対して、更新/削除された行の切り詰めを行いたい、VACUUMコマンドの使い方として正しいものは次のうちどれか？
+[1] VACUUM mydb;
+[2] VACUUM FULL mydb;
+[3] VACUUM VERBOSE mydb;
+[4] VACUUM -f mydb;"""
+answer = 2
+
+[[questions]]
+question = """下記のEXPLAINの実行結果について、正しいものは次の打ちどれか？
+postgres=# EXPLAIN SELECT relname,nspname FROM pg_class left join pg_namespace ON (pg_class.relnamespace = pg_namespace.oid);
+
+                               QUERY PLAN
+-------------------------------------------------------------------------
+
+Hash Left Join  (cost=1.14..15.97 rows=288 width=128)
+   Hash Cond: (pg_class.relnamespace = pg_namespace.oid)
+   ->  Seq Scan on pg_class  (cost=0.00..10.88 rows=288 width=68)
+   ->  Hash  (cost=1.06..1.06 rows=6 width=68)
+         ->  Seq Scan on pg_namespace  (cost=0.00..1.06 rows=6 width=68)
+(5 行)
+
+[1] このEXPLAINコマンドを実行すると、引数に指定したSQL文が実際に実行される
+[2] 「cost=〜」の部分は、処理にかかる実際の時間を示している
+[3] 計画ノードの「Hash Left Join」、「Seq Scan on pg_class」、「Seq Scan on pg_namespace」の記述は、プランナが自動選択した最適なデータ処理のアルゴリズムを示している
+[4] 「width=〜」の部分は、実際の1行あたりの平均のバイトサイズを示している"""
+answer = 3
+
+[[questions]]
+question = """pg_stat_statementsの説明として正しいものは次のうちどれか？
+[1] SQL文の実行に指定した時間以上かかった場合、それぞれのSQL文の実行に要した時間を記録する
+[2] ロック待ちとなっているトランザクションや対象のテーブルを確認する
+[3] 実行された全てのSQL文の実行時の統計情報を記録する
+[4] データベースあたり1行の形式でデータベース全体の情報を表示する
+"""
+answer = 3
+
+[[questions]]
+question = """pg_classに関する記述の中で、正しいものは次の打ちどれか？
+[1] relpages列にはテーブル内の行数が格納されている
+[2] pg_classはテーブルの情報のみを格納している
+[3] pg_class内には常に最新の情報が格納されている
+[4] pg_classに格納されている統計情報は一部のDDLコマンドで更新される"""
+answer = 4
+
+[[questions]]
+question = """テーブルへのアクセスの統計情報を表示する方法として、正しいSQL文を次のうちどれか？
+[1] SELECT * FROM pg_stat_activity;
+[2] SELECT * FROM pg_stat_database;
+[3] SELECT * FROM pg_stat_bgwriter;
+[4] SELECT * FROM pg_stat_all_tables;"""
+answer = 4
+
+[[questions]]
+question = """pg_locksビューによって確認することが可能なロックの対象となるオブジェクトは次のうちどれか？
+[1] カラム
+[2] リレーション
+[3] データベース
+[4] ブロック"""
+answer = 1
+
+[[questions]]
+question = """EXPLAINコマンドで指定可能な出力形式のうち誤っているものは次のうちどれか？
+[1] JSON
+[2] CSV
+[3] YAML
+[4] XML"""
+answer = 2
+
+[[questions]]
+question = """EXPLAINコマンドを使用することで、問い合わせ文の実行計画を表示することができる、EXPLAINコマンドの対象となるSQLコマンドとして正しいものは次のうちどれか？
+[1] DELETE
+[2] DROP TABLE
+[3] PREPARE
+[4] EXECUTE"""
+answer = 4
+
+[[questions]]
+question = """標準統計情報ビューに関して正しいものを全て選択しなさい。
+[1] pg_stat_all_tablesから、TOASTテーブルから読み取られたディスクブロック数を取得することができる。
+[2] pg_stat_activityから、現在の問い合わせの予想実行完了時刻を取得することができる。
+[3] pg_stat_databaseから、対象データベースのエラー発生数を取得することができる。
+[4] pg_statio_all_tablesから、対象テーブルのバッファヒット数を取得することができる。"""
+answer = 4
+
+[[questions]]
+question = """pg_stat_databaseに関する記述で正しいものは次のうちどれか？
+[1] データベースクラスタ全体の稼働統計情報が1行だけ格納される。
+[2] blks_hitはバッファキャッシュにヒットしたブロック数が格納される。
+[3] blks_readはディスクから読み込んだブロック数とバッファキャッシュから読み込んだブロック数の合計である。
+[4] デフォルトではtrack_countsパラメータがoffであるため、稼働統計情報が収集されない。"""
+answer = 2
+
+[[questions]]
+question = """ロングトランザクションを発見するのに有効なシステムカタログについての解説で、適切なものは次のうちどれか？
+[1] pg_stat_activityのwaitingを監視する
+[2] pg_stat_activityのquery_startを監視する
+[3] pg_stat_activityのxact_startを監視する
+[4] ロングトランザクションを発見するのに有効なシステムカタログは無い"""
+answer = 3
+
+[[questions]]
+question = """oid2nameの使い方として誤っているものは次のうちどれか？
+[1] データベースのOID一覧を取得するため以下のコマンドを実行した
+　$ oid2name
+[2] 別ホストsrv上の5432ポートで動作するPostgreSQLのデータベースのOID一覧を取得するため以下のコマンドを実行した
+　$ oid2name -h srv -p 5432
+[3] データベースtestdbに含まれるテーブルのファイルノード番号一覧を取得するため以下のコマンドを実行した
+　$ oid2name -d testdb
+[4] テーブル空間のOID一覧を取得するため以下のコマンドを実行した
+　$ oid2name -s"""
+answer = 2
+
+[[questions]]
+question = """テーブル/カラム統計情報に関する記述の中で、正しいものは次のうちどれか？
+[1] pg_classには、常に最新の情報が格納されている。
+[2] pg_class内の列であるreltuplesにはテーブル内の行数が格納されるが、この値は推測値である。
+[3] pg_statsは、カラム統計情報を扱うテーブルである。
+[4] pg_statsで参照できる情報の中には実データの一部が格納されるため、一般のユーザは参照できない。"""
+answer = 2
+
+[[questions]]
+question = """pg_stat_database, pg_stat_all_tables などのアクセス統計情報(稼働統計情報)のビューに関する説明として、適切なものは次のうちどれか？
+[1] stats collector プロセスによって定期的にデータが収集される。
+[2] ANALYZE コマンドを実行したときにデータが収集される。
+[3] テーブルの行数、最大値・最小値、データの分布など、テーブル内のデータの状態が収集される。
+[4] プランナが SQL の最適な実行計画を作成するために利用される。"""
+answer = 1
+
+[[questions]]
+question = """PostgreSQLサーバをレプリケーション構成で稼働させる場合、synchronous_commit パラメータによってプライマリ機とスタンバイ機の同期レベルをチューニングすることが可能である、以下の選択肢はプライマリ機でトランザクションのコミットを実行した際の、synchronous_commit パラメータの設定値毎の動作の説明をしたものである、誤っているものは次のうちどれか？
+[1] on にすると、WALがスタンバイ機のディスクに正常に書き出されたタイミングでコミット成功とする
+[2] off にすると、WALがプライマリ機にもスタンバイ機にもまだ書き出されていない状況でもコミット成功とする
+[3] remote_apply にすると、スタンバイ機でのWALのディスク書き込みだけでなく、WALの記述内容がデータベースに適用されたタイミングでコミット成功とする
+[4] local にすると、WALがスタンバイ機のディスクに書き出される前の、バッファに書き出されたタイミングでコミット成功とする"""
+answer = 4
+
+[[questions]]
+question = """buffers_backendに関する説明として適切なものは次のうちどれか？
+[1] pg_io_bgwriterビューによって表示される
+[2] チェックポイントによる書き出しの際に値が増加する
+[3] buffers_backendの値がbuffers_allocに対して大きい場合は、shared_buffersの値のチューニングを検討する必要がある
+[4] バックグラウンドライタによる書き出しの際に値が増加する"""
+answer = 3
+
+[[questions]]
+question = """問い合わせ計画に関する以下の内容のうち、正しいものは次のうちどれか？
+[1] enable_seqscanを無効に設定すると、シーケンシャルスキャンは完全に行われなくなる。
+[2] random_page_costをseq_page_costと比較して小さく設定すると、よりインデックススキャンが使用されるようになる。
+[3] random_page_costをseq_page_costと比較して大きく設定すると、よりインデックススキャンが使用されるようになる。
+[4] default_statistics_targetをより小さく設定すると、より細かく統計情報を収集するようになるため、プランナの予測の品質が向上する。"""
+answer = 2
+
+[[questions]]
+question = """work_memをチューニングすることによって、性能が向上すると考えられる処理は次のうちどれか？
+[1] ORDER BY
+[2] CREATE INDEX
+[3] VACUUM
+[4] 自動VACUUM"""
+answer = 1
+
+[[questions]]
+question = """インデックスの作成に関する説明として、適切なものは次のうちどれか？
+[1] FILLFACTORの指定が省略された場合、デフォルト値として対象テーブルのFILLFACTORと同じ値が設定される
+[2] UNLOGGEDパラメータが指定された場合、インデックスの更新時にWALログが取られなくなり、更新処理が高速化する
+[3] PARALLELパラメータが指定された場合、複数のプロセスによりインデックスが作成され、作成時間が短縮する
+[4] CONCURRENTLYパラメータが指定された場合、対象テーブルに対する書き込みをロックせずにインデックスを作成するが、通常の方式より作成時間が長くなる"""
+answer = 4
+
+[[questions]]
+question = """GUCパラメータのenable_seqscanをonからoffに変更する前後で、同一のクエリに対してEXPLAIN ANALYZE文で実行計画を取得する、実行計画の変化の説明として、最も適切ではないものを１つ選びなさい、この時、enable_seqscan以外の条件はすべて同一とする。
+[1] Total runtimeの値が大きくなる可能性がある
+[1] Total runtimeの値が小さくなる可能性がある
+[1] 最上位ノードの全体推定コストが大きくなる可能性がある
+[1] 最上位ノードの全体推定コストが小さくなる可能性がある"""
+answer = 4
+
+[[questions]]
+question = """インデックスの再作成について正しい記述は次のうちどれか？
+[1] インデックスの再作成はサービスを停止して行う必要がある。
+[2] REINDEXはインデックスの元となるテーブルの読み込みをロックしないため、サービス稼働中に実行しても参照処理への影響はない。
+[3] CREATE INDEX CONCURRENTLYは、同時挿入、更新、削除と競合するロックを獲得せずにインデックスを作成できる。
+[4] CREATE INDEX CONCURRENTLYでは、プライマリキーの作成も可能である。"""
+answer = 3
+
+[[questions]]
+question = """PostgreSQLの処理全般が定期的に遅くなる現象が発生した、この場合のチューニングで効果が期待できる対策は次のうちどれか？
+[1] 遅くなったSQLを見直し、負荷の原因となっている記述を修正する。
+[2] checkpoint_completion_targetを調整して、チェックポイントの負荷分散を図る。
+[3] ストリーミングレプリケーション構成に変更し負荷分散を図る。
+[4] PostgreSQLの特性であり対策はない。"""
+answer = 2
+
+[[questions]]
+question = """full_page_writesパラメータをOFFに設定した場合に関する説明として、適切でないものは次のうちどれか？
+[1] データ更新時の応答性能が向上する可能性がある
+[2] データ更新時のWALの書き込み量が低減する可能性がある
+[3] wal_levelパラメータがminimalの場合は、応答性能は変化しない
+[4] システムクラッシュ時に、回復不可能なデータ破損が発生する可能性がある"""
+answer = 3
+
+[[questions]]
+question = """性能低下の原因に関して正しいものは次のうちどれか？
+[1] shared_buffersの値を小さく設定したことによって、チェックポイント中の問い合わせの性能が低下した。
+[2] maintenance_work_memをwork_memよりも大きく設定したことによって、VACUUM処理の性能が低下した。
+[3] 複数のセッションが多量のINSERTを発行したことによって、WALファイルへの書き込みで競合が発生し、INSERTの性能が低下した。
+[4] pgstattupleを用いて定期的にタプルレベルの統計情報を取得しなかったため、PostgreSQLが最適な実行計画を作成できずに問い合わせの性能が低下した。"""
+answer = 3
+
+[[questions]]
+question = """デッドロックに関する GUC パラメータ deadlock_timeout の説明として、正しいものは次のうちどれか？
+[1] deadlock_timeout で指定された時間を経過してもロックが獲得できなければ、デッドロックが発生していると判断される。
+[2] deadlock_timeout の値を調整することで、デッドロックの発生を回避できる。
+[3] deadlock_timeout の値を小さくすると、ロック待ちのプロセスが減るので、結果的にCPU負荷を小さくすることができると考えられる。
+[4] デッドロックはアプリケーションの作り方を工夫することで回避すべきであり、deadlock_timeout の値はなるべく大きくすることが望ましい。"""
+answer = 4
+
+[[questions]]
+question = """GUCパラメータの説明として、誤っているものを1つ選びなさい。
+[1] shared_bufferは、PostgreSQLサーバが使用する共有メモリバッファのサイズ を設定する。
+[2] max_connectionsは、PostgresSQLサーバに接続できる最大クライアント数を 設定する。
+[3] work_memは、VACUUM、CREATE INDEXなどの保守作業で使用されるメモリの最 大容量を設定する。
+[4] sslをonに設定することでSSL接続を有効にする。"""
+answer = 3
+
+[[questions]]
+question = """共有メモリが不足して、サーバがダウンしてしまった時の対策として正しいものは次のうちどれか？
+[1] maintenance_work_memで適切なメモリ領域を設定する
+[2] shared_buffersで適切なメモリ領域を設定する
+[3] autovacuum_work_memで適切なメモリ領域を設定する
+[4] pg_resetwalを用いてWALファイルを整合性のある状態に復旧し、PostgreSQLを起動する"""
+answer = 2
+
+[[questions]]
+question = """以下のサーバログに関する説明として、適切なものを1つ選びなさい。
+LOG: server process (PID 21334) was terminated by signal 11: Segmentation fault
+DETAIL: Failed process was running: SELECT user_func();
+
+[1] プロセスに対してpg_cancel_backend関数が発行された
+[2] プロセスに対してpg_terminate_backend関数が発行された
+[3] OOM KillerによりSIGKILLが発生した
+[4] user_funcユーザ定義関数によりSIGSEGVが発生した"""
+answer = 4
+
+[[questions]]
+question = """PostgreSQLへの接続に関して、スーパーユーザでPostgreSQLに接続した際、以下のメッセージが出力された。
+FATAL: sorry, too many clients already
+このエラーメッセージが出力される原因として適切なものを1つ選びなさい。
+[1] 同時接続数がmax_connectionsに設定した値を超えた。
+[2] 同時接続数がsuperuser_reserved_connectionsに設定した値を超えた。
+[3] 同時接続数がdb_connectionsに設定した値を超えた。
+[4] 同時接続数が（max_connections - superuser_reserved_connections）の値を超えた。"""
+answer = 1
+
+[[questions]]
+question = """あるユーザテーブルの参照時に、以下のエラーメッセージが出力された。
+「ERROR: invalid page header in block 0 of relation base/16408/16421」
+この時の対処として最も適切なものを1つ選びなさい。
+[1] データベース全体に対してVACUUMを実行する
+[2] 該当のテーブルファイルを削除し、PostgreSQLを再起動する
+[3] zero_damaged_pages を on に設定して再度テーブルを参照する
+[4] 該当のシステムテーブルに対してCLUSTERを実行する"""
+answer = 3
+
+[[questions]]
+question = """システムカタログのインデックスに関する説明として、適切ではないものを1つ選びなさい。
+[1] システムカタログのインデックスが破損している場合、サーバプロセスが起動時に強制終了する可能性がある。
+[2] システムカタログの読み込み時にシステムインデックスを無視するにはGUCパラメータのignore_system_indexesを利用する。
+[3] インデックスの破損範囲が不明な場合に、データベースの全てのシステムインデックスを再構成するためのSQLコマンドはREINDEX SYSTEMである。
+[4] 共有システムカタログのいずれかのインデックスが破損した可能性がある場合は、必ずスタンドアロンサーバを使用して修復しなければいけない。"""
+answer = 4
+
