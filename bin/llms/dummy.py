@@ -18,9 +18,14 @@
 #
 
 import random
+import time
 
 
 def dymmy_fn(system_prompt, user_prompt) -> str:
-    print(f"system_prompt:\n{system_prompt}\nuser_prompt:\n{user_prompt}")
-    return str(random.randint(0, 4)), None
+    # print(f"system_prompt:\n{system_prompt}\nuser_prompt:\n{user_prompt}")
+    # Emulate Web API turn-around time
+    time.sleep(1)
+
+    return str(random.randint(0, 4)), 0.0030
+    # return str(random.randint(0, 4)), None
 

@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+import random
 import tiktoken
 
 
@@ -39,5 +40,5 @@ def gpt4_cost_estimator(system_prompt, user_prompt) -> str:
     # Assume the number of output tokens is the same with as one of input tokens
     cost = len(input_tokens) * (COST_PER_INPUT_TOKEN + COST_PER_OUTPUT_TOKEN)
 
-    return 0, cost
+    return str(random.randint(0, 4)), cost
 

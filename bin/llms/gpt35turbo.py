@@ -26,20 +26,20 @@ COST_PER_INPUT_TOKEN = 0.0015 / 1000
 COST_PER_OUTPUT_TOKEN = 0.002 / 1000
 
 
-client = None
+_client = None
 _tokenizer = None
 
 
 def gpt35turbo(system_prompt, user_prompt) -> str:
     global _client, _tokenizer
 
-    if client is None:
-        client = OpenAI()
+    if _client is None:
+        _client = OpenAI()
 
     if _tokenizer is None:
         _tokenizer = tiktoken.encoding_for_model("gpt-3.5-turbo")
 
-    completion = client.chat.completions.create(
+    completion = _client.chat.completions.create(
         model='gpt-3.5-turbo',
         messages=[
             {'role': 'system', 'content': system_prompt},

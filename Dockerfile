@@ -2,6 +2,7 @@ FROM python:3.11-alpine
 WORKDIR /workspace
 
 # Install necessary packages
+# TODO: Cannot use japanese in this image...
 RUN apk add --no-cache \
     tree \
     vim

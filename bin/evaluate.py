@@ -20,6 +20,7 @@
 import hashlib
 import json
 import openai_response_format
+import prompt_template
 import tomllib
 import tqdm
 import statistics
@@ -28,25 +29,6 @@ from utils import setup_logger, import_function
 
 
 EVALSTATE_FILENAME_TEMPLATE = ".evalstate_{hc}.json"
-
-POSTGRES_QA_PROMPT_TEMPLATE = """
-{prompt}
-
-下記の問題例の形式で示されるPostgreSQL{version}に関する質問に対して、以下のルールを厳守して回答してください
-
- - 質問された内容が回答可能である場合には、半角数字で1, 2, 3, 4のいずれかで出力すること（下記の問題例の場合には1と出力すること）
- - 質問された内容が回答できない場合には、半角数字の0を出力すること
- - 半角数字の0, 1, 2, 3, 4以外の文字は出力しないこと
-
-問題例:
-コマンド「pg_dump -Fc db1 -f db.dump」にて実行したバックアップについて、正しいものは次のうちどれか？
-[1] バックアップはカスタム形式と呼ばれるバイナリ形式で出力される
-[2] バックアップは db.dump に出力されるが、合わせて標準出力にも出力される
-[3] バックアップは psql コマンドでリストアする
-[4] pg_dumpall はデータの一貫性が保証されるが、pg_dump はデータの一貫性が保証されない
-
-PostgreSQL{version} に関する質問:
-"""
 
 
 class EvalResultState:
@@ -90,7 +72,7 @@ _logger = setup_logger()
 def main() -> None:
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument('--input', type=str)
+    parser.add_argument('--questions', type=str)
     parser.add_argument('--module', type=str)
     parser.add_argument('--version', type=str)
     parser.add_argument('--prompt', type=str)
@@ -98,8 +80,8 @@ def main() -> None:
     parser.add_argument('--resume', type=str)
     args = parser.parse_args()
 
-    if not ((args.input and args.module) or args.resume):
-        raise ValueError('If `--resume` not given, you must specify both `--input` and `--module`')
+    if not ((args.questions and args.module) or args.resume):
+        raise ValueError('If `--resume` not given, you must specify both `--questions` and `--module`')
 
     prev_state = None
 
@@ -111,11 +93,12 @@ def main() -> None:
         if args.prompt is not None:
             user_prompt = Path(args.prompt).read_text(encoding='utf-8')
 
-        system_prompt = POSTGRES_QA_PROMPT_TEMPLATE.format(prompt=user_prompt, version=version)
+        system_prompt = prompt_template.POSTGRES_QA_PROMPT_TEMPLATE.format(prompt=user_prompt, version=version)
 
-        with open(args.input, 'r', encoding='utf-8') as f:
+        with open(args.questions, 'r', encoding='utf-8') as f:
             loaded = tomllib.loads(f.read())
 
+        # Validate loaded data for loading questions
         questions = openai_response_format.question_validate(loaded['questions'])
         for q in questions:
             # Initialize lists for storing LLM results

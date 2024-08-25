@@ -65,15 +65,17 @@ def _import_function_from_file(module_path, function_name):
     return getattr(module, function_name)
 
 
-def import_function(module_path):
-    # Load an evaluation function from a given Python file
-    function_names = _list_functions_in_file(module_path)
-    if len(function_names) == 0:
-        raise ValueError(f"Can't load any function from '{module_path}'")
-    if len(function_names) > 1:
-        raise ValueError(f"Multiple functions found in '{module_path}', it must have only one function")
+def import_function(module_path, fn=None):
+    if fn is None:
+        # Load an evaluation function from a given Python file
+        function_names = _list_functions_in_file(module_path)
+        if len(function_names) == 0:
+            raise ValueError(f"Can't load any function from '{module_path}'")
+        if len(function_names) > 1:
+            raise ValueError(f"Multiple functions found in '{module_path}', it must have only one function")
 
-    fn = function_names[0]
+        fn = function_names[0]
+
     func = _import_function_from_file(module_path, fn)
     _logger.info(f"Function '{fn}' loaded from '{module_path}'")
 
