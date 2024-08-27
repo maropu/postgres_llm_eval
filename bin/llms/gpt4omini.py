@@ -21,30 +21,44 @@ import tiktoken
 from openai import OpenAI
 
 
-# Cost of the 'gpt-4' model
-COST_PER_INPUT_TOKEN = 0.0015 / 1000
-COST_PER_OUTPUT_TOKEN = 0.002 / 1000
+# Cost of the 'gpt-4o-mini' model
+COST_PER_INPUT_TOKEN = 0.00015 / 1000
+COST_PER_OUTPUT_TOKEN = 0.0006 / 1000
 
 
 _client = None
 _tokenizer = None
 
 
-def gpt35turbo(system_prompt, user_prompt, params={}) -> str:
+def gpt4omini(system_prompt, user_prompt, params={}) -> str:
     global _client, _tokenizer
 
     if _client is None:
         _client = OpenAI()
 
     if _tokenizer is None:
-        _tokenizer = tiktoken.encoding_for_model("gpt-3.5-turbo")
+        _tokenizer = tiktoken.encoding_for_model("gpt-4o-mini")
+
+    # Parameter settings
+    def _get_param(name, tpe, default):
+        try:
+            return tpe(params[name])
+        except:
+            return default
+
+    temperature = _get_param('temperature', float, 1.0)
+    top_p = _get_param('top_p', float, 1.0)
 
     completion = _client.chat.completions.create(
-        model='gpt-3.5-turbo',
+        model='gpt-4o-mini',
         messages=[
             {'role': 'system', 'content': system_prompt},
             {'role': 'user', 'content': user_prompt}
-        ]
+        ],
+        temperature=temperature,
+        top_p=top_p,
+        n=1,
+        stop=None
     )
 
     ret = completion.choices[0].message.content

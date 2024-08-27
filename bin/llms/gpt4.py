@@ -30,7 +30,7 @@ _client = None
 _tokenizer = None
 
 
-def gpt4(system_prompt, user_prompt) -> str:
+def gpt4(system_prompt, user_prompt, params={}) -> str:
     global _client, _tokenizer
 
     if _client is None:

@@ -93,7 +93,8 @@ def main() -> None:
         if args.prompt is not None:
             user_prompt = Path(args.prompt).read_text(encoding='utf-8')
 
-        system_prompt = prompt_template.POSTGRES_QA_PROMPT_TEMPLATE.format(prompt=user_prompt, version=version)
+        # system_prompt = prompt_template.POSTGRES_QA_PROMPT_TEMPLATE.format(prompt=user_prompt, version=version)
+        system_prompt = user_prompt
 
         with open(args.questions, 'r', encoding='utf-8') as f:
             loaded = tomllib.loads(f.read())

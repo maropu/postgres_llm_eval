@@ -17,42 +17,28 @@
 # limitations under the License.
 #
 
+import random
 import tiktoken
-from openai import OpenAI
 
 
-# Cost of the 'gpt-4' model
-COST_PER_INPUT_TOKEN = 0.0015 / 1000
-COST_PER_OUTPUT_TOKEN = 0.002 / 1000
+# Cost of the 'gpt-4o-mini' model
+COST_PER_INPUT_TOKEN = 0.00015 / 1000
+COST_PER_OUTPUT_TOKEN = 0.0006 / 1000
 
 
-_client = None
 _tokenizer = None
 
 
-def gpt35turbo(system_prompt, user_prompt, params={}) -> str:
-    global _client, _tokenizer
-
-    if _client is None:
-        _client = OpenAI()
+def gpt4_cost_estimator(system_prompt, user_prompt, params={}) -> str:
+    global _tokenizer
 
     if _tokenizer is None:
-        _tokenizer = tiktoken.encoding_for_model("gpt-3.5-turbo")
+        _tokenizer = tiktoken.encoding_for_model("gpt-4o-mini")
 
-    completion = _client.chat.completions.create(
-        model='gpt-3.5-turbo',
-        messages=[
-            {'role': 'system', 'content': system_prompt},
-            {'role': 'user', 'content': user_prompt}
-        ]
-    )
-
-    ret = completion.choices[0].message.content
-
-    # Compute total cost using the number of input/output tokens
     input_tokens = _tokenizer.encode(system_prompt + user_prompt)
-    output_tokens = _tokenizer.encode(ret)
-    cost = len(input_tokens) * COST_PER_INPUT_TOKEN + len(output_tokens) * COST_PER_OUTPUT_TOKEN
 
-    return ret, cost
+    # Assume the number of output tokens is the same with as one of input tokens
+    cost = len(input_tokens) * (COST_PER_INPUT_TOKEN + COST_PER_OUTPUT_TOKEN)
+
+    return str(random.randint(0, 4)), cost
 

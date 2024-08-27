@@ -21,11 +21,13 @@ import random
 import time
 
 
-def dymmy_fn(system_prompt, user_prompt) -> str:
-    # print(f"system_prompt:\n{system_prompt}\nuser_prompt:\n{user_prompt}")
-    # Emulate Web API turn-around time
-    time.sleep(1)
+def dymmy_fn(system_prompt, user_prompt, params={}) -> str:
+    if 'print_prompt' in params:
+        print(f"system_prompt:\n{system_prompt}\nuser_prompt:\n{user_prompt}")
 
-    return str(random.randint(0, 4)), 0.0030
-    # return str(random.randint(0, 4)), None
+    # Emulate Web API turn-around time
+    time.sleep(params['sleep_time'] if 'sleep_time' in params else 0)
+    ret = str(random.randint(0, 4)) if 'multiple_choice' in params else system_prompt + user_prompt
+    cost = float(params['cost']) if 'cost' in params else None
+    return ret, cost
 

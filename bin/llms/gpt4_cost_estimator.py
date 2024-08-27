@@ -29,7 +29,7 @@ COST_PER_OUTPUT_TOKEN = 0.06 / 1000
 _tokenizer = None
 
 
-def gpt4_cost_estimator(system_prompt, user_prompt) -> str:
+def gpt4_cost_estimator(system_prompt, user_prompt, params={}) -> str:
     global _tokenizer
 
     if _tokenizer is None:

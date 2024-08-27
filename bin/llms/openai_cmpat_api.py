@@ -44,7 +44,7 @@ def _to_error_msg(text: str) -> str:
 @retrying.retry(stop_max_attempt_number=3, wait_exponential_multiplier=1000, wait_exponential_max=4000,
                 retry_on_exception=_retry_if_timeout,
                 wrap_exception=False)
-def openai_compat_api(system_prompt, user_prompt, api='chat/completions') -> str:
+def openai_compat_api(system_prompt, user_prompt, api='chat/completions', params={}) -> str:
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {OPENAI_CMPAT_API_SERV_API_KEY}',

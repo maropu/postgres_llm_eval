@@ -88,7 +88,7 @@ def evaluate(context, query_prefix, questions, func, n=3):
 
     for _ in tqdm.tqdm(range(n), leave=False, desc=f'Evaluating prompt(#questions={len(questions)},#trials={n})'):
         for q in tqdm.tqdm(questions, leave=False):
-            ret, cost = func(context, query_prefix + "\n" + q['question'])
+            ret, cost = func(context, query_prefix + "\n" + q['question'], {'multiple_choice': 1})
             total_cost += cost if cost is not None else 0.0
 
             try:
@@ -131,12 +131,17 @@ def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
                     max_iter, max_applied_rule_num, max_example_num,
                     trace_enabled=False):
     best_prompt, best_score = '', -1.0
+    base_score = 0.0
     total_cost = 0.0
     trace = []
 
     demonstrations, questions = split_data(questions, ratio=0.4)
 
     try:
+        # First, compute the base score by using the initial prompt
+        base_score, cost = evaluate(base_prompt, query_prefix, questions, func, n=3)
+        total_cost += cost if cost is not None else 0.0
+
         rules, cost = prepare_rules(rules, rule_domain_size, func)
         total_cost += cost if cost is not None else 0.0
 
@@ -147,7 +152,7 @@ def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
                 else:
                     pb.set_description(f"[Best Score:{best_score:.2f}]")
 
-                # TODO: Improve a strategy for searching the best context prompt
+                # TODO: Improve a strategy for searching the best context prompt (e.g., use hyperpot?)
                 query, applied_rules, cost = rewrite_prompt(
                         base_prompt, rules, demonstrations, func, max_applied_rule_num, max_example_num)
                 total_cost += cost if cost is not None else 0.0
@@ -172,6 +177,7 @@ def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
         return best_prompt, best_score, {
                 'best_score': best_score,
                 'best_prompt': best_prompt,
+                'initial_score': base_score,
                 'initial_prompt': base_prompt,
                 'rules': rules,
                 'trace': trace
@@ -192,8 +198,9 @@ def main() -> None:
     parser.add_argument('--rules', type=str, required=True)
     parser.add_argument('--rule_domain_size', type=int, required=True)
     parser.add_argument('--query-prefix', type=str, default='PostgreSQLに関する質問:')
-    parser.add_argument('--max-iter', type=int, default=12)
-    parser.add_argument('--max-applied-rule-num', type=int, default=10)
+    parser.add_argument('--max-iter', type=int, default=32)
+    # Too many rules aplied can deteriorate accuracy
+    parser.add_argument('--max-applied-rule-num', type=int, default=3)
     parser.add_argument('--max-example-num', type=int, default=3)
     parser.add_argument('--trace', action='store_true')
     args = parser.parse_args()
