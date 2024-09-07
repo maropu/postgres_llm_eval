@@ -69,17 +69,10 @@ def apply_rules_to_prompt(prompt, rules, func):
     return prompt, total_cost
 
 
-def rewrite_prompt(prompt, rules, demonstrations, func, max_applied_rule_num, max_example_num):
+def rewrite_prompt(prompt, rules, func, max_applied_rule_num):
     sampled_rules = random.sample(rules, random.randint(1, max_applied_rule_num))
-    rewrite_prompt, cost = apply_rules_to_prompt(prompt, sampled_rules, func)
-
-    # Fill the prompt with a few example demonstrations
-    examples = random.sample(demonstrations, random.randint(1, max_example_num))
-    examples = list(map(lambda x: f"問題例{x[0]}:\n{x[1]['question']}\n\n問題例{x[0]}の解答: {x[1]['answer']}",
-                        enumerate(examples)))
-
-    generated_prompt = rewrite_prompt + "\n" + "\n\n".join(examples)
-    return generated_prompt, sampled_rules, cost
+    rewritten_prompt, cost = apply_rules_to_prompt(prompt, sampled_rules, func)
+    return rewritten_prompt, sampled_rules, cost
 
 
 def evaluate(context, query_prefix, questions, func, n=3):
@@ -126,12 +119,13 @@ def prepare_rules(rules, rule_domain_size, func):
     return rules, total_cost
 
 
-def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
+def optimize_prompt(initial_prompt, query_prefix, questions, rules, func,
                     rule_domain_size,
                     max_iter, max_applied_rule_num, max_example_num,
                     trace_enabled=False):
     best_prompt, best_score = '', -1.0
-    base_score = 0.0
+    base_prompt = initial_prompt
+    initial_score = 0.0
     total_cost = 0.0
     trace = []
 
@@ -139,7 +133,7 @@ def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
 
     try:
         # First, compute the base score by using the initial prompt
-        base_score, cost = evaluate(base_prompt, query_prefix, questions, func, n=3)
+        initial_score, cost = evaluate(base_prompt, query_prefix, questions, func, n=3)
         total_cost += cost if cost is not None else 0.0
 
         rules, cost = prepare_rules(rules, rule_domain_size, func)
@@ -153,12 +147,17 @@ def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
                     pb.set_description(f"[Best Score:{best_score:.2f}]")
 
                 # TODO: Improve a strategy for searching the best context prompt (e.g., use hyperpot?)
-                query, applied_rules, cost = rewrite_prompt(
-                        base_prompt, rules, demonstrations, func, max_applied_rule_num, max_example_num)
+                rewritten_prompt, applied_rules, cost = rewrite_prompt(base_prompt, rules, func, max_applied_rule_num)
                 total_cost += cost if cost is not None else 0.0
+
+                # Selects some of demonstrations for filling the prompt
+                examples = random.sample(demonstrations, random.randint(1, max_example_num))
+                examples = list(map(lambda x: f"問題例{x[0]}:\n{x[1]['question']}\n\n問題例{x[0]}の解答: {x[1]['answer']}",
+                                    enumerate(examples)))
 
                 # TODO: Support the hyperparameter search for LLM params (e.g., temperature)
                 # TODO: Pass an additional 'params' parameter in 'func'
+                query = rewritten_prompt + "\n" + "\n\n".join(examples)
                 score, cost = evaluate(query, query_prefix, questions, func, n=3)
                 total_cost += cost if cost is not None else 0.0
 
@@ -166,6 +165,7 @@ def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
                     trace.append({'score': score, 'prompt': query, 'rules': applied_rules})
 
                 if best_score < score:
+                    base_prompt = rewritten_prompt
                     best_prompt = query
                     best_score = score
 
@@ -177,8 +177,8 @@ def optimize_prompt(base_prompt, query_prefix, questions, rules, func,
         return best_prompt, best_score, {
                 'best_score': best_score,
                 'best_prompt': best_prompt,
-                'initial_score': base_score,
-                'initial_prompt': base_prompt,
+                'initial_score': initial_score,
+                'initial_prompt': initial_prompt,
                 'rules': rules,
                 'trace': trace
             }

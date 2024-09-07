@@ -239,7 +239,7 @@ def generate_questions(version, num, openai_modelname, changelog_max_num=30, cac
 def main() -> None:
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument('--model', type=str, default='gpt-4') # 'gpt-4' or 'gpt-3.5-turbo'
+    parser.add_argument('--model', type=str, default='gpt-4o-mini') # 'gpt-4' or 'gpt-3.5-turbo'
     parser.add_argument('--output-dir', type=str, required=True)
     parser.add_argument('--version', type=int)
     parser.add_argument('--num', type=int, default=30)
